@@ -1,0 +1,450 @@
+using System;
+namespace ConsoleApp2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            bool pR = true;
+            while (pR)
+            {
+                Console.WriteLine("1.Игра - отгадай ответ");
+                Console.WriteLine("2.Информация об авторе");
+                Console.WriteLine("3.Сортировка массива");
+                Console.WriteLine("4.Магический квадрат.");
+                Console.WriteLine("5.Выход");
+                Console.WriteLine("Выберите пункт меню:");
+                int menu;
+                while (!int.TryParse(Console.ReadLine(), out menu) || menu < 1 || menu > 5)
+                {
+                    Console.WriteLine("Ошибка!Введите числа от 1 до 5.");
+                }
+                switch (menu)
+                {
+                    case 1:
+                        PlayGuess();
+                        break;
+                    case 2:
+                        AuthorName();
+                        break;
+                    case 3:
+                        SortArray();
+                        break;
+                    case 4:
+                        PlayMagicSquare();
+                        break;
+                    case 5:
+                        pR = Confex();
+                        break;
+
+                }
+                if (pR)
+                {
+                    Console.WriteLine("\nНажмите любую клавишу для продолжения");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+            }
+
+        }
+        static void AuthorName()
+        {
+            string authorName = "Муслимов Артем Николаевич";
+            string groupNumber = "6101-090301";
+            Console.WriteLine($"\nАвтор: {authorName}");
+            Console.WriteLine($"Группа: {groupNumber}");
+        }
+        static void PlayGuess()
+        {
+            Console.WriteLine("\nПриветствуем в игре - отгадай ответ");
+            Console.WriteLine("Используется функция под номером 9");
+            double a = 0;
+            Console.Write("Введите значение a:");
+            while (double.TryParse(Console.ReadLine(), out a) == false)
+            {
+
+                Console.WriteLine("Ошибка!Введите числовое значение a");
+            }
+            double b = 0;
+            Console.Write("Введите значение b");
+            while (double.TryParse(Console.ReadLine(), out b) == false)
+            {
+                Console.WriteLine("Ошибка!Введите числовое значение b");
+            }
+            double cr = CF(a, b);
+            if (double.IsNaN(cr)) return;
+            int att = 3;
+            bool guess = false;
+            while (att > 0 && !guess)
+            {
+                double usguess;
+                Console.Write($"Введите предполагаеемый ответ (осталось попыток {att}):");
+                while (double.TryParse(Console.ReadLine(), out usguess) == false)
+                {
+                    Console.WriteLine("Введите числовое значение");
+                }
+                if (Math.Round(usguess, 2) == Math.Round(cr, 2))
+                {
+                    Console.WriteLine("Вы угадали!");
+                    guess = true;
+                }
+                else
+                {
+                    Console.WriteLine("Неудача");
+                    att--;
+                }
+            }
+            if (!guess)
+            {
+                Console.WriteLine($"Правильный ответ:{Math.Round(cr, 2)} ");
+            }
+        }
+        static double CF(double a, double b)
+        {
+            double verx = Math.Pow(Math.Sin(a), 2) + Math.Pow(Math.Cos(b), 3);
+            double niz = Math.Pow(Math.Sin(a), 3) - Math.Pow(Math.Cos(b), 2);
+            if (verx < 0)
+            {
+                Console.WriteLine("Отриц значение под корнем");
+                return double.NaN;
+            }
+            if (Math.Abs(niz) < 0.00001)
+            {
+                Console.WriteLine("На ноль делить нельзя");
+                return double.NaN;
+            }
+            double fr = verx / niz;
+            if (fr < 0)
+            {
+                Console.WriteLine("Отриц знач под корнем");
+                return double.NaN;
+            }
+            return Math.Sqrt(fr);
+        }
+        static bool Confex()
+        {
+            bool confirmed = true;
+            bool validinput = false;
+            while (!validinput)
+            {
+                Console.WriteLine("Вы уверены, что хотите выйти? (д/н)");
+                string input = Console.ReadLine();
+                if (input == "д")
+                {
+                    confirmed = false;
+                    validinput = true;
+                    Console.WriteLine("Досвидания");
+
+                }
+                else if (input == "н")
+                {
+                    confirmed = true;
+                    validinput = true;
+                }
+                else
+                {
+                    Console.WriteLine("Ошибка! Введите д или н");
+                }
+            }
+            return confirmed;
+        }
+        static void SortArray()
+        {
+            Console.WriteLine("\nСравнение сортировок");
+            Console.Write("Введите размер массива: ");
+            int size;
+            while (!int.TryParse(Console.ReadLine(), out size) || size < 1)
+            {
+                Console.Write("Ошибка! Введите положительное число: ");
+            }
+            int[] originalArray = RandomArr(size);
+            int[] array1 = CopyArray(originalArray);
+            int[] array2 = CopyArray(originalArray);
+            Console.WriteLine("\nИсходный массив:");
+            ShowArray(originalArray);
+            Console.WriteLine("\nСортировка Шелла");
+            ShellSort(array1);
+            ShowArray(array1);
+            Console.WriteLine("\nСортировка вставками");
+            InsertionSort(array2);
+            ShowArray(array2);
+            Console.WriteLine("\nОбе сортировки завершены.");
+            Console.WriteLine("Массивы отсортированы по возрастанию.");
+        }
+        static int[] RandomArr(int size)
+        {
+            Random random = new Random();
+            int[] array = new int[size];
+
+            for (int i = 0; i < size; i++)
+            {
+                array[i] = random.Next(-100, 101);
+            }
+
+            return array;
+        }
+
+        static int[] CopyArray(int[] original)
+        {
+            int[] copy = new int[original.Length];
+            for (int i = 0; i < original.Length; i++)
+            {
+                copy[i] = original[i];
+            }
+            return copy;
+        }
+
+        static void ShowArray(int[] array)
+        {
+            if (array.Length > 10)
+            {
+                Console.WriteLine($"Массив из {array.Length} элементов слишком большой");
+                return;
+            }
+
+            Console.Write("[");
+            for (int i = 0; i < array.Length; i++)
+            {
+                Console.Write(array[i]);
+                if (i < array.Length - 1) Console.Write(", ");
+            }
+            Console.WriteLine("]");
+        }
+        static void ShellSort(int[] array)
+        {
+            int n = array.Length;
+            for (int g = n / 2; g > 0; g /= 2)
+            {
+                for (int i = g; i < n; i++)
+                {
+                    int temp = array[i];
+                    int j;
+                    for (j = i; j >= g && array[j - g] > temp; j -= g)
+                    {
+                        array[j] = array[j - g];
+                    }
+
+                    array[j] = temp;
+                }
+            }
+        }
+        static void InsertionSort(int[] array)
+        {
+            int n = array.Length;
+            for (int i = 1; i < n; i++)
+            {
+                int key = array[i];
+                int j = i - 1;
+                while (j >= 0 && array[j] > key)
+                {
+                    array[j + 1] = array[j];
+                    j--;
+                }
+                array[j + 1] = key;
+            }
+        }
+    
+    static void PlayMagicSquare()
+        {
+            Console.WriteLine("\nИгра 'Магический квадрат'");
+            Console.WriteLine("Цель: разместите числа от 1 до 9 на поле 3x3 так,");
+            Console.WriteLine("чтобы сумма в каждой строке, столбце и диагонали была равна 15.");
+
+            int[,] gameBoard = InitializeGameBoard();
+            bool[] usedNumbers = new bool[10];
+
+            bool gameWon = false;
+            bool gameLost = false;
+            int movesCount = 0;
+
+            while (!gameWon && !gameLost)
+            {
+                DisplayGameBoard(gameBoard);
+
+           
+                int number = GetNumberInput(usedNumbers);
+                if (number == -1) continue; 
+
+                
+                int[] coordinates = GetCoordinatesInput(gameBoard);
+                if (coordinates == null) continue; 
+
+                int row = coordinates[0];
+                int col = coordinates[1];
+
+                
+                gameBoard[row, col] = number;
+                usedNumbers[number] = true;
+                movesCount++;
+
+                
+                gameWon = CheckWinCondition(gameBoard);
+                gameLost = CheckLoseCondition(gameBoard, movesCount);
+            }
+
+            DisplayGameBoard(gameBoard);
+
+            if (gameWon)
+            {
+                Console.WriteLine("\nПоздравляем! Вы собрали магический квадрат! ");
+            }
+            else
+            {
+                Console.WriteLine("\n Игра окончена! Все числа расставлены, но магический квадрат не собран.");
+            }
+
+            Console.WriteLine("Нажмите любую клавишу для возврата в меню...");
+            Console.ReadKey();
+        }
+
+        
+        static int[,] InitializeGameBoard()
+        {
+            int[,] board = new int[3, 3];
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    board[i, j] = 0;
+                }
+            }
+            return board;
+        }
+
+        
+        static void DisplayGameBoard(int[,] board)
+        {
+            Console.WriteLine("\nТекущее состояние поля:");
+            Console.WriteLine("    0   1   2");
+            Console.WriteLine("  ┌───┬───┬───┐");
+
+            for (int i = 0; i < 3; i++)
+            {
+                Console.Write($"{i} │");
+                for (int j = 0; j < 3; j++)
+                {
+                    if (board[i, j] == 0)
+                    {
+                        Console.Write("   │");
+                    }
+                    else
+                    {
+                        Console.Write($" {board[i, j]} │");
+                    }
+                }
+                Console.WriteLine();
+                if (i < 2)
+                {
+                    Console.WriteLine("  ├───┼───┼───┤");
+                }
+            }
+            Console.WriteLine("  └───┴───┴───┘");
+        }
+
+        
+        static int GetNumberInput(bool[] usedNumbers)
+        {
+            while (true)
+            {
+                Console.Write("\nВведите число от 1 до 9: ");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out int number))
+                {
+                    if (number >= 1 && number <= 9)
+                    {
+                        if (!usedNumbers[number])
+                        {
+                            return number;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Это число уже использовано! Выберите другое.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Число должно быть от 1 до 9!");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Некорректный ввод! Введите целое число.");
+                }
+            }
+        }
+
+        
+        static int[] GetCoordinatesInput(int[,] board)
+        {
+            while (true)
+            {
+                Console.Write("Введите координаты (строка столбец, например: 0 1): ");
+                string input = Console.ReadLine();
+                string[] parts = input.Split(' ');
+
+                if (parts.Length == 2 &&
+                    int.TryParse(parts[0], out int row) &&
+                    int.TryParse(parts[1], out int col))
+                {
+                    if (row >= 0 && row <= 2 && col >= 0 && col <= 2)
+                    {
+                        if (board[row, col] == 0)
+                        {
+                            return new int[] { row, col };
+                        }
+                        else
+                        {
+                            Console.WriteLine("Эта клетка уже занята! Выберите другую.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Координаты должны быть от 0 до 2!");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Некорректный формат! Введите два числа через пробел.");
+                }
+            }
+        }
+
+        static bool CheckWinCondition(int[,] board)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (board[i, j] == 0)
+                    {
+                        return false; 
+                    }
+                }
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                int rowSum = board[i, 0] + board[i, 1] + board[i, 2];
+                if (rowSum != 15) return false;
+            }
+
+            for (int j = 0; j < 3; j++)
+            {
+                int colSum = board[0, j] + board[1, j] + board[2, j];
+                if (colSum != 15) return false;
+            }
+
+
+            int diag1 = board[0, 0] + board[1, 1] + board[2, 2];
+            int diag2 = board[0, 2] + board[1, 1] + board[2, 0];
+
+            return diag1 == 15 && diag2 == 15;
+        }
+
+        static bool CheckLoseCondition(int[,] board, int movesCount)
+        {
+            return movesCount >= 9 && !CheckWinCondition(board);
+        }
+    }
+}
